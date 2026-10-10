@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Coin Laundry @ Walnut: from the storefront. Red block-letter sign, royal-blue Lavandería pill, navy machine bands */
+@theme inline {
+  --color-background: var(--bg);
+  --color-border: var(--line);
+  --color-bg: var(--bg);
+  --color-bg2: var(--bg-2);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-soft: var(--soft);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-redtext: var(--red-text);
+  --color-blue: var(--blue);
+  --color-bluetext: var(--blue-text);
+  --color-navy: #16235e;
+  --color-tintblue: var(--tint-blue);
+  --font-display: var(--font-archivo-black), Impact, sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --ease-silk: cubic-bezier(.32, .72, 0, 1);
+  --ease-spring: cubic-bezier(.34, 1.4, .64, 1);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(calc(-100% - var(--gap))); } }
+}
+
+:root {
+  --bg: #fbf8f3; --bg-2: #f3eee5; --card: #ffffff; --ink: #131a3a; --soft: #545b78; --line: rgba(19, 26, 58, .1);
+  --red: #d61f2c; --red-text: #c81b28; --blue: #1d3fb0; --blue-text: #1d3fb0; --tint-blue: #e7ecfb;
+  --glass: rgba(251, 248, 243, .78); --hi: rgba(255, 255, 255, .9); --shadow: rgba(19, 26, 58, .2); --map: none;
+}
+.dark {
+  --bg: #0a0e1f; --bg-2: #0e1328; --card: #131a36; --ink: #eef0fa; --soft: #9ba3c7; --line: rgba(238, 240, 250, .09);
+  --red: #ef3b47; --red-text: #ff6b74; --blue: #5b7cf0; --blue-text: #8ea6ff; --tint-blue: #1a2550;
+  --glass: rgba(10, 14, 31, .74); --hi: rgba(255, 255, 255, .05); --shadow: rgba(0, 0, 0, .6);
+  --map: invert(.9) hue-rotate(180deg) saturate(.6);
+  color-scheme: dark;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1; letter-spacing: -.015em; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--red); text-shadow: 3px 3px 0 color-mix(in srgb, var(--red) 45%, #000); }
+::selection { background: #d61f2c; color: #fff; }
+:focus-visible { outline: 3px solid #1d3fb0; outline-offset: 3px; border-radius: 10px; }
+.sign { color: var(--red); text-shadow: 1.5px 1.5px 0 #9e111b; }
+.pill { display: inline-block; background: #1d3fb0; color: #fff; font: italic 800 13px/1 var(--font-archivo), sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px 6px; border-radius: 999px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.2); }
+/* suds that rise inside the porthole switch */
+@keyframes rise { from { transform: translateY(8px); opacity: 0; } 40% { opacity: 1; } to { transform: translateY(-10px); opacity: 0; } }
+.sud { animation: rise 2.4s ease-in infinite; }
+@keyframes tumble { to { transform: rotate(360deg); } }
+.tumble { animation: tumble 1.2s cubic-bezier(.5, 0, .3, 1); }
+
+@layer base {
+  html { overflow-x: clip; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; transition: background-color .5s var(--ease-silk), color .5s var(--ease-silk); }
+  p { text-wrap: pretty; }
+}
+
+body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: .04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+.glass { background: var(--glass); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); }
+.bezel { padding: 6px; background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--line); }
+
+/* theme change grows out of the switch that was pressed */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: grow .6s cubic-bezier(.7, 0, .3, 1); }
+@keyframes grow { from { clip-path: circle(0 at var(--rx, 100%) var(--ry, 0)); } to { clip-path: circle(var(--rr, 150vmax) at var(--rx, 100%) var(--ry, 0)); } }
+
+.rv { opacity: 0; transform: translateY(40px); filter: blur(8px); transition-property: opacity, transform, filter; transition-duration: 1s; transition-timing-function: cubic-bezier(.32, .72, 0, 1); }
+.rv.in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  .rv { opacity: 1; transform: none; filter: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) { .glass { background: var(--bg); backdrop-filter: none; } }
